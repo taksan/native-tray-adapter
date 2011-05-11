@@ -19,12 +19,13 @@
 JDK_DIR = $(JAVA_HOME)
 
 CC = gcc
-CFLAGS = -pipe -g -fPIC 
+CFLAGS = -pipe -g -fPIC `pkg-config --cflags-only-I --libs gtk+-2.0`
 #-Wall -W 
 INCPATH = -I. -I$(JDK_DIR)/include -I$(JDK_DIR)/include/linux
 SOURCES = NativeLinuxTray.c
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS_X64 = $(SOURCES:.c=_x64.o)
+LIBS=`pkg-config --cflags --libs gtk+-2.0`
 
 .SECONDEXPANSION:
 
@@ -36,17 +37,17 @@ TARGET=../../src/main/resources/
 all: liblinuxtray_x86.so liblinuxtray_x64.so
 
 liblinuxtray_x86.so: NativeLinuxTray 
-	$(LINK) $(LFLAGS) -m32 -o $(TARGET)/liblinuxtray_x86.so $(OBJECTS) `pkg-config --cflags --libs gtk+-2.0`
+	$(LINK) $(LFLAGS) -m32 -o $(TARGET)/liblinuxtray_x86.so $(OBJECTS) $(LIBS)
 
 liblinuxtray_x64.so: NativeLinuxTray 
 	$(LINK) $(LFLAGS) -m64 -o $(TARGET)/liblinuxtray_x64.so $(OBJECTS_X64) $(LIBS)
 
-tray_LinuxNativeTrayAdapter.h:
-	javah -classpath ../../target/classes tray.LinuxNativeTrayAdapter
+tray_linux_NativeLinuxTray.h:
+	javah -classpath ../../target/classes tray.linux.NativeLinuxTray
 
-NativeLinuxTray: tray_LinuxNativeTrayAdapter.h NativeLinuxTray.c
+NativeLinuxTray: tray_linux_NativeLinuxTray.h NativeLinuxTray.c
 	$(CC) -c $(CFLAGS) $(INCPATH) -m32 -o $@.o $@.c
 	$(CC) -c $(CFLAGS) $(INCPATH) -m64 -o $@_x64.o $@.c
 
 clean:
-	rm -f tray_LinuxNativeTrayAdapter.h *.o *.so 
+	rm -f tray_linux_NativeLinuxTray.h *.o *.so 

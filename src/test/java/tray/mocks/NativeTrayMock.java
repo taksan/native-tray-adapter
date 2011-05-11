@@ -1,5 +1,6 @@
 package tray.mocks;
 
+import java.awt.MenuItem;
 import java.awt.TrayIcon.MessageType;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -12,7 +13,7 @@ public class NativeTrayMock implements NativeTray {
 
 	private String file;
 	private String tooltip;
-	private LinkedHashMap<Integer, String> linkedHashMap = new LinkedHashMap<Integer, String>();
+	private LinkedHashMap<MenuItem, String> linkedHashMap = new LinkedHashMap<MenuItem, String>();
 	private StringBuffer operations = new StringBuffer();
 
 	@Override
@@ -23,8 +24,8 @@ public class NativeTrayMock implements NativeTray {
 	}
 
 	@Override
-	public void nativeAddMenuItem(int i, String label) {
-		linkedHashMap.put(i, label);
+	public void nativeAddMenuItem(MenuItem item, String label) {
+		linkedHashMap.put(item, label);
 	}
 
 	@Override
@@ -55,6 +56,10 @@ public class NativeTrayMock implements NativeTray {
 
 	public String getOperations() {
 		return operations.toString().trim();
+	}
+
+	@Override
+	public void displayTrayIcon() {
 	}
 
 }

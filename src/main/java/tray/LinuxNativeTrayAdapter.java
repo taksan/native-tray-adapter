@@ -3,15 +3,18 @@ package tray;
 import java.awt.PopupMenu;
 import java.net.URL;
 
+import com.skype.connector.ConnectorUtils;
+
 import tray.linux.NativeLinuxTray;
 
 public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
 	
 	private static boolean isLoaded = false;
+	private static LinuxTrayIconAdapter linuxTrayIconAdapter;
 
 	public LinuxNativeTrayAdapter() {
 		if (!isLoaded ) {
-			System.loadLibrary("liblinuxtray_x64");
+			ConnectorUtils.loadLibrary("linuxtray_x64");
 			isLoaded = true;
 		}
 	}
@@ -24,6 +27,11 @@ public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
 	@Override
 	public TrayIconAdapter newNativeTrayIcon(URL imageURL, String tooltip,
 			PopupMenu popup) {
-		return new LinuxTrayIconAdapter(new NativeLinuxTray(), imageURL,tooltip,popup);
+		linuxTrayIconAdapter = new LinuxTrayIconAdapter(new NativeLinuxTray(), imageURL,tooltip,popup);
+		return linuxTrayIconAdapter;
+	}
+	
+	public static LinuxTrayIconAdapter getLinuxTrayIconAdapter() {
+		return linuxTrayIconAdapter;
 	}
 }

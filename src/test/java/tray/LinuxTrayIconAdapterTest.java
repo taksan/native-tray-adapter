@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,12 +50,13 @@ public class LinuxTrayIconAdapterTest {
 		};
 		linuxTrayIconAdapter.addActionListener(actionListener);
 		linuxTrayIconAdapter.fireActionActivated();
-		linuxTrayIconAdapter.fireMenuAction(1);
+		linuxTrayIconAdapter.fireMenuAction(produceMenuItem("bar"));
 		
 		String actionList = actionsPerformed.toString().trim();
 		Assert.assertEquals(
 				"fireActionActivated\n" + 
-				"bar-1 java.awt.MenuItem[menuitem0,label=bar]", actionList);
+				"bar-0 java.awt.MenuItem[menuitem0,label=bar]", 
+				actionList);
 	}
 
 	private LinuxTrayIconAdapter makeSubject(NativeTrayMock nativeTrayMock)
@@ -69,7 +71,11 @@ public class LinuxTrayIconAdapterTest {
 		return linuxTrayIconAdapter;
 	}
 	
+	LinkedHashMap<String,MenuItem> items = new LinkedHashMap<String, MenuItem>();
 	private MenuItem produceMenuItem(String caption) {
+		if (items.containsKey(caption)) {
+			return items.get(caption);
+		}
 		MenuItem menuItem = new MenuItem(caption);
 		ActionListener l = new ActionListener() {
 			
@@ -81,6 +87,7 @@ public class LinuxTrayIconAdapterTest {
 			}
 		};
 		menuItem.addActionListener(l);
+		items.put("caption", menuItem);
 		return menuItem;
 	}
 }
