@@ -5,7 +5,8 @@
 	<artifactId>native-tray-adapter</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Native Tray Adapter</name>
-	<description>Provides a simple adapter that makes the linux tray icon look good.</description>
+	<description>Provides a simple adapter that makes the tray use gtk under linux,
+providing a native look and feel.</description>
 	<build>
 		<plugins>
 			<plugin>
