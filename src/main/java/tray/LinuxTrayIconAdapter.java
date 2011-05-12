@@ -11,10 +11,12 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
 	private ActionListener actionListener;
 	private final NativeTray nativeTray;
+	private final PopupMenu popup;
 
 	public LinuxTrayIconAdapter(NativeTray nativeTray, URL imageURL,
 			String tooltip, PopupMenu popup) {
 		this.nativeTray = nativeTray;
+		this.popup = popup;
 		nativeTray.nativeInit(imageURL.getFile(), tooltip);
 		populateNativeMenuListeners(popup);
 	}
@@ -23,7 +25,7 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 		int i;
 		for (i = 0; i < popup.getItemCount(); i++) {
 			MenuItem item = popup.getItem(i);
-			nativeTray.nativeAddMenuItem(item, item.getLabel());
+			nativeTray.nativeAddMenuItem(i, item.getLabel());
 		}
 		nativeTray.displayTrayIcon();
 	}
@@ -50,7 +52,8 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 	}
 
 	@Override
-	public void fireMenuAction(MenuItem item) {
+	public void fireMenuAction(int menuItemIndex) {
+		MenuItem item = this.popup.getItem(menuItemIndex);
 		ActionListener[] actionListeners = item.getActionListeners();
 		ActionEvent e = new ActionEvent(item, 0,
 				item.getActionCommand());

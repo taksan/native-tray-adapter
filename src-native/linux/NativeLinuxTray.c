@@ -17,13 +17,11 @@ JNIEnv * gtkMainThreadJniEnv = NULL;
 JavaVM *javaVM;
 
 static void trayIconActivatedHandler(GObject *trayIcon, gpointer data);
-static void menuItemActivation(GtkMenuItem *item, gpointer menuItemIndex);
+static void menuItemActivationHandler(GtkMenuItem *item, gpointer menuItemIndex);
 
 void gtkMainThread(void * nothingUseful)
 {
-	print_and_flush("main will start...");
 	(*javaVM)->AttachCurrentThread(javaVM, (void**) &gtkMainThreadJniEnv, NULL );
-	print_and_flush("This thread ENV gtkMainThreadJniEnv: %p ...", gtkMainThreadJniEnv);
 	gtk_main();
 }
 
@@ -55,17 +53,16 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayTrayIcon
 }
 
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
-  (JNIEnv *env, jobject invokingObject, jobject item, jstring caption)
+  (JNIEnv *env, jobject invokingObject, jint itemIndex, jstring caption)
 {
 	jboolean isCopy;
 	GtkWidget *menuItem;
 	const char *menuItemName= (*env)->GetStringUTFChars(env, caption, &isCopy);
 
-	print_and_flush("Will add menu item: %s...", menuItemName);
 	menuItem = gtk_menu_item_new_with_label (menuItemName);
-	g_signal_connect (G_OBJECT (menuItem), "activate", G_CALLBACK (menuItemActivation), (gpointer)item);
+
+	g_signal_connect (G_OBJECT (menuItem), "activate", G_CALLBACK (menuItemActivationHandler), (gpointer)itemIndex);
 	gtk_menu_shell_append (GTK_MENU_SHELL (trayIconMenu), menuItem);
-	print_and_flush("Menu item %s added and connected...", menuItemName);
 
 	if (isCopy == JNI_TRUE) {
 		(*env)->ReleaseStringUTFChars(env, caption, menuItemName);
@@ -88,13 +85,11 @@ GtkStatusIcon * createTrayIcon(JNIEnv *env, jstring file) {
 	jboolean isCopy;
 	const char *fileChar= (*env)->GetStringUTFChars(env, file, &isCopy);
 
-	print_and_flush("icon image file will be set: %s...", fileChar);
 	GtkStatusIcon *newTrayIcon= gtk_status_icon_new_from_file (fileChar);
 
 	if (isCopy == JNI_TRUE) {
 		(*env)->ReleaseStringUTFChars(env, file, fileChar);
 	}
-	print_and_flush("icon set...");
 	return newTrayIcon;
 }
 
@@ -102,35 +97,36 @@ void setTooltip(JNIEnv *env, GtkStatusIcon *trayIcon, jstring tooltip) {
 	jboolean isCopy;
 	const char *tooltipCharArray= (*env)->GetStringUTFChars(env, tooltip, &isCopy);
 
-	print_and_flush("will set tooltip [%s]...", tooltipCharArray);
 	gtk_status_icon_set_tooltip (trayIcon, tooltipCharArray);
 	if (isCopy == JNI_TRUE) {
 		(*env)->ReleaseStringUTFChars(env, tooltip, tooltipCharArray);
 	}   
-	print_and_flush("tooltip set!");
 }
 
 void createTrayIconMenu(GtkStatusIcon *trayIcon)
 {
 	trayIconMenu = gtk_menu_new();
 
-	print_and_flush("trayIconMenu created...");
     g_signal_connect(GTK_STATUS_ICON (trayIcon), "popup-menu", GTK_SIGNAL_FUNC (trayIconPopupHandler), trayIconMenu);
 }
 
-static void menuItemActivation(GtkMenuItem *item, gpointer menuItemP)
+static void menuItemActivationHandler(GtkMenuItem *item, gpointer indexP)
 {
 	print_and_flush("Menu item activated...");
-	jobject menuItem = (jobject) menuItemP;
+	int menuItemIndex = (int) indexP;
+
+	print_and_flush("Menu item index: %d...", menuItemIndex);
+
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv);
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
-	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireMenuAction", "(Ljava/awt/MenuItem;)V");
+	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireMenuAction", "(I)V");
 	if (mid == 0) {
+		print_and_flush("Failed to fetch fireMenuAction method...");
 		return;
 	}
 	print_and_flush("Will trigger fireMenuAction...");
-	(*gtkMainThreadJniEnv)->CallVoidMethod(gtkMainThreadJniEnv, trayAdapter, mid, menuItem);
+	(*gtkMainThreadJniEnv)->CallVoidMethod(gtkMainThreadJniEnv, trayAdapter, mid, menuItemIndex);
 }
 
 static void trayIconActivatedHandler(GObject *trayIcon, gpointer data)

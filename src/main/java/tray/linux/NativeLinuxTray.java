@@ -1,6 +1,5 @@
 package tray.linux;
 
-import java.awt.MenuItem;
 import java.awt.TrayIcon.MessageType;
 
 import tray.NativeTray;
@@ -13,8 +12,8 @@ public class NativeLinuxTray implements NativeTray {
 	}
 
 	@Override
-	public void nativeAddMenuItem(MenuItem item, String caption) {
-		nativeAddMenuItem0(item, caption);
+	public void nativeAddMenuItem(int menuItemIndex, String caption) {
+		nativeAddMenuItem0(menuItemIndex, caption);
 	}
 	
 
@@ -34,15 +33,13 @@ public class NativeLinuxTray implements NativeTray {
 		nativeDisplayTrayIcon();
 	}	
 
-
 	private native void nativeInit0(String file, String tooltip);
 	
-	private native void nativeAddMenuItem0(MenuItem item, String caption);
+	private native void nativeAddMenuItem0(int menuItemIndex, String caption);
 	
 	private native void nativeDisplayTrayIcon();
 	
-	private native void nativeDisplayMessage0(String title, String caption,
-			MessageType info);
+	private native void nativeDisplayMessage0(String title, String caption, MessageType info);
 	
 	private native void nativeSetAutosize0(boolean autosize);
 

@@ -18,10 +18,10 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeInit0
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeAddMenuItem0
- * Signature: (Ljava/awt/MenuItem;Ljava/lang/String;)V
+ * Signature: (ILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
-  (JNIEnv *, jobject, jobject, jstring);
+  (JNIEnv *, jobject, jint, jstring);
 
 /*
  * Class:     tray_linux_NativeLinuxTray

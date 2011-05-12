@@ -50,7 +50,7 @@ public class LinuxTrayIconAdapterTest {
 		};
 		linuxTrayIconAdapter.addActionListener(actionListener);
 		linuxTrayIconAdapter.fireActionActivated();
-		linuxTrayIconAdapter.fireMenuAction(produceMenuItem("bar"));
+		linuxTrayIconAdapter.fireMenuAction(1);
 		
 		String actionList = actionsPerformed.toString().trim();
 		Assert.assertEquals(
