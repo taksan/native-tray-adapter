@@ -3,8 +3,7 @@ package tray;
 import java.awt.PopupMenu;
 import java.net.URL;
 
-import com.skype.connector.ConnectorUtils;
-
+import jni.utils.JniUtils;
 import tray.linux.NativeLinuxTray;
 
 public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
@@ -14,7 +13,7 @@ public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
 
 	public LinuxNativeTrayAdapter() {
 		if (!isLoaded ) {
-			ConnectorUtils.loadLibrary("linuxtray_x64");
+			JniUtils.loadLibrary("linuxtray_x64");
 			isLoaded = true;
 		}
 	}

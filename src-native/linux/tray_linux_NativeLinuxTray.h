@@ -47,6 +47,14 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayMessage0
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetAutosize0
   (JNIEnv *, jobject, jboolean);
 
+/*
+ * Class:     tray_linux_NativeLinuxTray
+ * Method:    nativeGetIconLocation0
+ * Signature: ()Ljava/awt/Point;
+ */
+JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

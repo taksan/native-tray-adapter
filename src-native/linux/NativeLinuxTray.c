@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <gtk/gtk.h>
 #include <stdarg.h>
 #include "tray_linux_NativeLinuxTray.h"
@@ -31,7 +32,8 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeInit0
 	(*env)->GetJavaVM(env, &javaVM);
 
 	int argc = 0;
-	char argv[][1] = {""};
+	char ** argv = malloc(sizeof(char*));
+	argv[0] = "";
     gtk_init (&argc, &argv);
 
 	trayIcon  = createTrayIcon(env, file);
@@ -72,6 +74,27 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayMessage0
   (JNIEnv * env, jobject invokingObject, jstring title, jstring caption, jobject messageType)
 {
+
+}
+
+JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
+  (JNIEnv *env, jobject invokingObject)
+{
+	GdkScreen                 *screen = NULL;
+	GdkRectangle    rect;
+
+	gtk_status_icon_get_geometry (trayIcon,
+			&screen,
+			&rect,
+			NULL);
+
+	jclass cls = (*env)->FindClass(env, "java/awt/Point");
+	jmethodID constructor = (*env)->GetMethodID(env, cls, "<init>", "(II)V");
+
+	jvalue args[2];
+	args[0].i = rect.x;
+	args[1].i = rect.y;
+	return (*env)->NewObjectA(env, cls, constructor, args);
 }
 
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetAutosize0
