@@ -1,9 +1,13 @@
 package tray;
 
 import java.awt.PopupMenu;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import jni.utils.JniUtils;
+import jni.utils.StreamUtils;
 import tray.linux.NativeLinuxTray;
 
 public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
@@ -26,8 +30,20 @@ public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
 	@Override
 	public TrayIconAdapter newNativeTrayIcon(URL imageURL, String tooltip,
 			PopupMenu popup) {
-		linuxTrayIconAdapter = new LinuxTrayIconAdapter(new NativeLinuxTray(), imageURL,tooltip,popup);
-		return linuxTrayIconAdapter;
+		try {
+			URL extractedImageFileUrl = extractImageAndGetTempUrl(imageURL);
+			return new LinuxTrayIconAdapter(new NativeLinuxTray(), extractedImageFileUrl,tooltip,popup);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private URL extractImageAndGetTempUrl(URL imageURL) throws IOException,
+			MalformedURLException {
+		File imageFile;
+		imageFile = StreamUtils.getStreamAsTempFileOrCry(imageURL.openStream(), "trayIconRehydratedImage");
+		URL extractedImageFileUrl = imageFile.toURI().toURL();
+		return extractedImageFileUrl;
 	}
 	
 	public static LinuxTrayIconAdapter getLinuxTrayIconAdapter() {
