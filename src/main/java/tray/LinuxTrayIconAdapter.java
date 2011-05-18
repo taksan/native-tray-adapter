@@ -5,31 +5,27 @@ import java.awt.PopupMenu;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+
+import jni.utils.StreamUtils;
 
 class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
 	private ActionListener actionListener;
 	private final NativeTray nativeTray;
 	private final PopupMenu popup;
+	private final String tooltip;
 
 	public LinuxTrayIconAdapter(NativeTray nativeTray, URL imageURL,
 			String tooltip, PopupMenu popup) {
 		this.nativeTray = nativeTray;
+		this.tooltip = tooltip;
 		this.popup = popup;
-		nativeTray.nativeInit(imageURL.getFile(), tooltip);
-		populateNativeMenuListeners(popup);
+		setupNativeTrayIcon(imageURL);
 	}
-
-	private void populateNativeMenuListeners(PopupMenu popup) {
-		int i;
-		for (i = 0; i < popup.getItemCount(); i++) {
-			MenuItem item = popup.getItem(i);
-			nativeTray.nativeAddMenuItem(i, item.getLabel());
-		}
-		nativeTray.displayTrayIcon();
-	}
-
+	
 	@Override
 	public void displayMessage(String title, String text, MessageType info) {
 		nativeTray.nativeDisplayMessage(title, text, info);
@@ -38,6 +34,12 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 	@Override
 	public void setImageAutoSize(boolean autosize) {
 		nativeTray.nativeSetAutosize(autosize);
+	}
+
+	@Override
+	public void setImage(URL imageUrl) {
+		final URL existingFileUrl = makeSureUrlPointsToExistingFile(imageUrl);
+		nativeTray.nativeSetImage(existingFileUrl.getFile());
 	}
 
 	@Override
@@ -61,4 +63,34 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 			actionListener.actionPerformed(e);
 		}
 	}
+
+	private URL makeSureUrlPointsToExistingFile(URL imageURL) {
+		File imageFile = new File(imageURL.getFile());
+		if (imageFile.exists())
+			return imageURL;
+		try {
+			imageFile = StreamUtils.getStreamAsTempFileOrCry(imageURL.openStream(), "trayIconRehydratedImage");
+			URL extractedImageFileUrl = imageFile.toURI().toURL();
+			return extractedImageFileUrl;
+		}catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void setupNativeTrayIcon(URL imageURL) {
+		final URL existingFileUrl = makeSureUrlPointsToExistingFile(imageURL);
+		nativeTray.nativeInit(existingFileUrl.getFile(), tooltip);
+		populateNativeMenuListeners(popup);
+	}
+
+	private void populateNativeMenuListeners(PopupMenu popup) {
+		int i;
+		for (i = 0; i < popup.getItemCount(); i++) {
+			MenuItem item = popup.getItem(i);
+			nativeTray.nativeAddMenuItem(i, item.getLabel());
+		}
+		nativeTray.displayTrayIcon();
+	}
+
+
 }

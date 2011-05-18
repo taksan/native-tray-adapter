@@ -14,5 +14,7 @@ public interface NativeTray {
 
 	void displayTrayIcon();
 
+	void nativeSetImage(String file);
+
 
 }

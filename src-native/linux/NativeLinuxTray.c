@@ -54,6 +54,20 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayTrayIcon
 	pthread_create(&gtkMainThreadId, NULL, gtkMainThread , NULL);
 }
 
+JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetImage0
+  (JNIEnv *env, jobject invoker, jstring file)
+{
+	jboolean isCopy;
+	const char *fileChar= (*env)->GetStringUTFChars(env, file, &isCopy);
+
+	gtk_status_icon_set_from_file(trayIcon, fileChar);
+
+	if (isCopy == JNI_TRUE) {
+		(*env)->ReleaseStringUTFChars(env, file, fileChar);
+	}
+}
+
+
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
   (JNIEnv *env, jobject invokingObject, jint itemIndex, jstring caption)
 {
@@ -80,6 +94,7 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayMessage0
 JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
   (JNIEnv *env, jobject invokingObject)
 {
+	print_and_flush("Will get icon location");
 	GdkScreen                 *screen = NULL;
 	GdkRectangle    rect;
 
@@ -88,9 +103,11 @@ JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
 			&rect,
 			NULL);
 
+	print_and_flush("location acquired");
 	jclass cls = (*env)->FindClass(env, "java/awt/Point");
 	jmethodID constructor = (*env)->GetMethodID(env, cls, "<init>", "(II)V");
 
+	print_and_flush("Point constructor acquired");
 	jvalue args[2];
 	args[0].i = rect.x;
 	args[1].i = rect.y;
@@ -135,20 +152,15 @@ void createTrayIconMenu(GtkStatusIcon *trayIcon)
 
 static void menuItemActivationHandler(GtkMenuItem *item, gpointer indexP)
 {
-	print_and_flush("Menu item activated...");
 	int menuItemIndex = (int) indexP;
-
-	print_and_flush("Menu item index: %d...", menuItemIndex);
 
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv);
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
 	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireMenuAction", "(I)V");
 	if (mid == 0) {
-		print_and_flush("Failed to fetch fireMenuAction method...");
 		return;
 	}
-	print_and_flush("Will trigger fireMenuAction...");
 	(*gtkMainThreadJniEnv)->CallVoidMethod(gtkMainThreadJniEnv, trayAdapter, mid, menuItemIndex);
 }
 
@@ -158,6 +170,7 @@ static void trayIconActivatedHandler(GObject *trayIcon, gpointer data)
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
 	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireActionActivated", "()V");
+
 	if (mid == 0) {
 		return;
 	}

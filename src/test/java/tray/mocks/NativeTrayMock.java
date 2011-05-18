@@ -4,6 +4,7 @@ import java.awt.TrayIcon.MessageType;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 
 import tray.NativeTray;
@@ -59,6 +60,11 @@ public class NativeTrayMock implements NativeTray {
 
 	@Override
 	public void displayTrayIcon() {
+	}
+
+	@Override
+	public void nativeSetImage(String file) {
+		throw new NotImplementedException();
 	}
 
 }

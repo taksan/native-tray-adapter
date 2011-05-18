@@ -35,6 +35,12 @@ public class NativeLinuxTray implements NativeTray {
 		balloon.setBounds(loc.x+12, loc.y+12, 1,1);
 		balloon.display(caption, text, messageType);
 	}
+	
+	@Override
+	public void nativeSetImage(String file) {
+		this.nativeSetImage0(file);
+	}
+
 
 	private native void nativeInit0(String file, String tooltip);
 
@@ -46,6 +52,8 @@ public class NativeLinuxTray implements NativeTray {
 			MessageType info);
 
 	private native void nativeSetAutosize0(boolean autosize);
+	
+	private native void nativeSetImage0(String imageFileName);
 
 	private native Point nativeGetIconLocation0();
 }

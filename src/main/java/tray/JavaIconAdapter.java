@@ -1,17 +1,17 @@
 package tray;
 
-import java.awt.Image;
 import java.awt.PopupMenu;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class JavaIconAdapter implements TrayIconAdapter {
 
 	private final TrayIcon trayIcon;
 
-	public JavaIconAdapter(Image image, String tooltip, PopupMenu popup) {
-		trayIcon = new TrayIcon(image, tooltip, popup);
+	public JavaIconAdapter(URL imageUrl, String tooltip, PopupMenu popup) {
+		trayIcon = new TrayIcon(ImageLoader.load(imageUrl), tooltip, popup);
 	}
 
 	@Override
@@ -27,6 +27,11 @@ public class JavaIconAdapter implements TrayIconAdapter {
 	@Override
 	public void addActionListener(ActionListener doubleClicklistener) {
 		trayIcon.addActionListener(doubleClicklistener);
+	}
+	
+	@Override
+	public void setImage(URL imageUrl) {
+		trayIcon.setImage(ImageLoader.load(imageUrl));
 	}
 
 	public TrayIcon getTrayIcon() {

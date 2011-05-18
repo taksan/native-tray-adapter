@@ -10,5 +10,4 @@ public class JavaSystemTrayProvider {
 		}
 		return new JavaTrayAdapter();
 	}
-
 }

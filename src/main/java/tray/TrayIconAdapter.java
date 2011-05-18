@@ -2,6 +2,7 @@ package tray;
 
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public interface TrayIconAdapter {
 
@@ -10,5 +11,7 @@ public interface TrayIconAdapter {
 	public void setImageAutoSize(boolean autoSize);
 
 	public void addActionListener(ActionListener actionListener);
+
+	public void setImage(URL imageUrl);
 
 }

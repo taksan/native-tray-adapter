@@ -42,7 +42,7 @@ liblinuxtray_x86.so: $(OBJECTS)
 liblinuxtray_x64.so: $(OBJECTS_X64)
 	$(LINK) $(LFLAGS) -m64 -o $(TARGET)/liblinuxtray_x64.so $(OBJECTS_X64) $(LIBS)
 
-tray_linux_NativeLinuxTray.h:
+tray_linux_NativeLinuxTray.h: ../../src/main/java/tray/linux/NativeLinuxTray.java
 	javah -classpath ../../target/classes tray.linux.NativeLinuxTray
 
 #NativeLinuxTray: tray_linux_NativeLinuxTray.h NativeLinuxTray.c
