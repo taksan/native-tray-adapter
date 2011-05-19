@@ -17,6 +17,7 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 	private final NativeTray nativeTray;
 	private final PopupMenu popup;
 	private final String tooltip;
+	private int nativeId;
 
 	public LinuxTrayIconAdapter(NativeTray nativeTray, URL imageURL,
 			String tooltip, PopupMenu popup) {
@@ -26,20 +27,24 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 		setupNativeTrayIcon(imageURL);
 	}
 	
+	public int getNativeId() {
+		return nativeId;
+	}
+	
 	@Override
 	public void displayMessage(String title, String text, MessageType info) {
-		nativeTray.nativeDisplayMessage(title, text, info);
+		nativeTray.nativeDisplayMessage(nativeId, title, text, info);
 	}
 
 	@Override
 	public void setImageAutoSize(boolean autosize) {
-		nativeTray.nativeSetAutosize(autosize);
+		nativeTray.nativeSetAutosize(nativeId, autosize);
 	}
 
 	@Override
 	public void setImage(URL imageUrl) {
 		final URL existingFileUrl = makeSureUrlPointsToExistingFile(imageUrl);
-		nativeTray.nativeSetImage(existingFileUrl.getFile());
+		nativeTray.nativeSetImage(nativeId, existingFileUrl.getFile());
 	}
 
 	@Override
@@ -49,6 +54,8 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
 	@Override
 	public void fireActionActivated() {
+		if (this.actionListener == null)
+			return;
 		ActionEvent e = new ActionEvent(this, 0, "activate");
 		this.actionListener.actionPerformed(e);
 	}
@@ -79,18 +86,20 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
 	private void setupNativeTrayIcon(URL imageURL) {
 		final URL existingFileUrl = makeSureUrlPointsToExistingFile(imageURL);
-		nativeTray.nativeInit(existingFileUrl.getFile(), tooltip);
+		nativeId = nativeTray.nativeCreateTrayIcon(existingFileUrl.getFile(), tooltip);
 		populateNativeMenuListeners(popup);
+		nativeTray.displayTrayIcon(nativeId);
 	}
 
 	private void populateNativeMenuListeners(PopupMenu popup) {
 		int i;
 		for (i = 0; i < popup.getItemCount(); i++) {
 			MenuItem item = popup.getItem(i);
-			nativeTray.nativeAddMenuItem(i, item.getLabel());
+			nativeTray.nativeAddMenuItem(nativeId, i, item.getLabel());
 		}
-		nativeTray.displayTrayIcon();
 	}
 
-
+	public void removeMe() {
+		nativeTray.nativeRemoveMe(nativeId);
+	}
 }

@@ -1,7 +1,7 @@
 package tray;
 
 
-public class JavaSystemTrayProvider {
+public class SystemTrayProvider {
 
 	public SystemTrayAdapter getSystemTray() {
 		String osName = System.getProperty("os.name").toLowerCase();

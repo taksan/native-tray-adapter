@@ -11,7 +11,14 @@ public class JavaTrayAdapter implements SystemTrayAdapter {
 	SystemTray systemTray = SystemTray.getSystemTray();
 
 	@Override
-	public void add(TrayIconAdapter trayIcon) {
+	public TrayIconAdapter createAndAddTrayIcon(URL imageURL, String tooltip,
+			PopupMenu popup) {
+		JavaIconAdapter javaIconAdapter = new JavaIconAdapter(imageURL, tooltip, popup);
+		add(javaIconAdapter);
+		return javaIconAdapter;
+	}
+	
+	private void add(TrayIconAdapter trayIcon) {
 		JavaIconAdapter adapter = (JavaIconAdapter) trayIcon;
 		try {
 			systemTray.add(adapter.getTrayIcon());
@@ -21,8 +28,8 @@ public class JavaTrayAdapter implements SystemTrayAdapter {
 	}
 
 	@Override
-	public TrayIconAdapter newNativeTrayIcon(URL imageURL, String tooltip,
-			PopupMenu popup) {
-		return new JavaIconAdapter(imageURL, tooltip, popup);
+	public void remove(TrayIconAdapter trayIcon) {
+		JavaIconAdapter javaIconAdapter = (JavaIconAdapter)trayIcon;
+		systemTray.remove(javaIconAdapter.getTrayIcon());
 	}
 }

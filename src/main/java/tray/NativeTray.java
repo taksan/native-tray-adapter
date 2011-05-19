@@ -4,17 +4,20 @@ import java.awt.TrayIcon.MessageType;
 
 public interface NativeTray {
 
-	void nativeInit(String file, String tooltip);
+	int nativeCreateTrayIcon(String file, String tooltip);
 
-	void nativeAddMenuItem(int menuItemIndex, String label);
+	void nativeAddMenuItem(int nativeId, int menuItemIndex, String label);
 
-	void nativeDisplayMessage(String title, String caption, MessageType info);
+	void nativeDisplayMessage(int nativeId, String title, String caption, MessageType info);
 
-	void nativeSetAutosize(boolean autosize);
+	void nativeSetAutosize(int nativeId, boolean autosize);
+	
+	void nativeRemoveMe(int nativeId);
 
-	void displayTrayIcon();
+	void displayTrayIcon(int nativeId);
 
-	void nativeSetImage(String file);
+	void nativeSetImage(int nativeId, String file);
+
 
 
 }

@@ -14,7 +14,7 @@ public class JavaTrayAdapterTest {
 		JavaTrayAdapter javaTrayAdapter = new JavaTrayAdapter();
 		PopupMenu popup = new PopupMenu();
 		URL imageURL = this.getClass().getResource("sample.svg");
-		JavaIconAdapter trayIcon = (JavaIconAdapter) javaTrayAdapter.newNativeTrayIcon(imageURL, "a tool tip", popup);
+		JavaIconAdapter trayIcon = (JavaIconAdapter) javaTrayAdapter.createAndAddTrayIcon(imageURL, "a tool tip", popup);
 		Image loadedImage = trayIcon.getTrayIcon().getImage();
 		Assert.assertNotNull(loadedImage);
 	}

@@ -7,53 +7,64 @@ import tray.NativeTray;
 import tray.balloon.Balloon;
 
 public class NativeLinuxTray implements NativeTray {
-	@Override
-	public void nativeInit(String file, String tooltip) {
-		nativeInit0(file, tooltip);
+	
+	public NativeLinuxTray() {
+		nativeInit0();
 	}
 
 	@Override
-	public void nativeAddMenuItem(int menuItemIndex, String caption) {
-		nativeAddMenuItem0(menuItemIndex, caption);
+	public int nativeCreateTrayIcon(String file, String tooltip) {
+		return nativeCreateTrayIcon0(file, tooltip);
 	}
 
 	@Override
-	public void nativeSetAutosize(boolean autosize) {
-		nativeSetAutosize0(autosize);
+	public void nativeAddMenuItem(int nativeId, int menuItemIndex, String caption) {
+		nativeAddMenuItem0(nativeId, menuItemIndex, caption);
 	}
 
 	@Override
-	public void displayTrayIcon() {
-		nativeDisplayTrayIcon();
+	public void nativeSetAutosize(int nativeId, boolean autosize) {
+		nativeSetAutosize0(nativeId, autosize);
 	}
 
 	@Override
-	public void nativeDisplayMessage(final String caption, final String text,
+	public void displayTrayIcon(int nativeId) {
+		nativeDisplayTrayIcon(nativeId);
+	}
+
+	@Override
+	public void nativeDisplayMessage(int nativeId, final String caption, final String text,
 			final MessageType messageType) {
-		Point loc = nativeGetIconLocation0();
+		Point loc = nativeGetIconLocation0(nativeId);
 		final Balloon balloon = new Balloon();
 		balloon.setBounds(loc.x+12, loc.y+12, 1,1);
 		balloon.display(caption, text, messageType);
 	}
 	
 	@Override
-	public void nativeSetImage(String file) {
-		this.nativeSetImage0(file);
+	public void nativeSetImage(int nativeId, String file) {
+		this.nativeSetImage0(nativeId, file);
 	}
-
-
-	private native void nativeInit0(String file, String tooltip);
-
-	private native void nativeAddMenuItem0(int menuItemIndex, String caption);
-
-	private native void nativeDisplayTrayIcon();
-
-	private native void nativeDisplayMessage0(String title, String caption,
-			MessageType info);
-
-	private native void nativeSetAutosize0(boolean autosize);
 	
-	private native void nativeSetImage0(String imageFileName);
+	@Override
+	public void nativeRemoveMe(int nativeId) {
+		this.nativeRemoveMe0(nativeId);
+	}
+	
+	private native void nativeInit0();
+	
+	private native int nativeCreateTrayIcon0(String file, String tooltip);
 
-	private native Point nativeGetIconLocation0();
+	private native void nativeRemoveMe0(int nativeId);
+
+	private native void nativeAddMenuItem0(int nativeId, int menuItemIndex, String caption);
+
+	private native void nativeDisplayTrayIcon(int nativeId);
+
+	private native void nativeSetAutosize0(int nativeId, boolean autosize);
+	
+	private native void nativeSetImage0(int nativeId, String imageFileName);
+
+	private native Point nativeGetIconLocation0(int nativeId);
+
 }

@@ -17,25 +17,26 @@ public class NativeTrayMock implements NativeTray {
 	private StringBuffer operations = new StringBuffer();
 
 	@Override
-	public void nativeInit(String file, String tooltip) {
+	public int nativeCreateTrayIcon(String file, String tooltip) {
 		this.file = file;
 		this.tooltip = tooltip;
+		return 0;
 		
 	}
 
 	@Override
-	public void nativeAddMenuItem(int menuItemIndex, String label) {
+	public void nativeAddMenuItem(int nativeId, int menuItemIndex, String label) {
 		linkedHashMap.put(menuItemIndex, label);
 	}
 
 	@Override
-	public void nativeDisplayMessage(String title, String caption,
+	public void nativeDisplayMessage(int nativeId, String title, String caption,
 			MessageType info) {
 		operations.append(String.format("nativeDisplayMessage(%s,%s,%s)", title, caption, info));
 	}
 
 	@Override
-	public void nativeSetAutosize(boolean autosize) {
+	public void nativeSetAutosize(int nativeId, boolean autosize) {
 		operations.append("nativeSetAutosize("+autosize+")\n");
 	}
 
@@ -59,11 +60,16 @@ public class NativeTrayMock implements NativeTray {
 	}
 
 	@Override
-	public void displayTrayIcon() {
+	public void displayTrayIcon(int nativeId) {
 	}
 
 	@Override
-	public void nativeSetImage(String file) {
+	public void nativeSetImage(int nativeId, String file) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void nativeRemoveMe(int nativeId) {
 		throw new NotImplementedException();
 	}
 

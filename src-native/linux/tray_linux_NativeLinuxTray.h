@@ -10,58 +10,66 @@ extern "C" {
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeInit0
- * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeInit0
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     tray_linux_NativeLinuxTray
+ * Method:    nativeCreateTrayIcon0
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_tray_linux_NativeLinuxTray_nativeCreateTrayIcon0
   (JNIEnv *, jobject, jstring, jstring);
 
 /*
  * Class:     tray_linux_NativeLinuxTray
+ * Method:    nativeRemoveMe0
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeRemoveMe0
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeAddMenuItem0
- * Signature: (ILjava/lang/String;)V
+ * Signature: (IILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
-  (JNIEnv *, jobject, jint, jstring);
+  (JNIEnv *, jobject, jint, jint, jstring);
 
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeDisplayTrayIcon
- * Signature: ()V
+ * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayTrayIcon
-  (JNIEnv *, jobject);
-
-/*
- * Class:     tray_linux_NativeLinuxTray
- * Method:    nativeDisplayMessage0
- * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/awt/TrayIcon/MessageType;)V
- */
-JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayMessage0
-  (JNIEnv *, jobject, jstring, jstring, jobject);
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeSetAutosize0
- * Signature: (Z)V
+ * Signature: (IZ)V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetAutosize0
-  (JNIEnv *, jobject, jboolean);
+  (JNIEnv *, jobject, jint, jboolean);
 
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeSetImage0
- * Signature: (Ljava/lang/String;)V
+ * Signature: (ILjava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetImage0
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jint, jstring);
 
 /*
  * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeGetIconLocation0
- * Signature: ()Ljava/awt/Point;
+ * Signature: (I)Ljava/awt/Point;
  */
 JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject, jint);
 
 #ifdef __cplusplus
 }

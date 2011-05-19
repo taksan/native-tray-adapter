@@ -22,7 +22,7 @@ CC = gcc
 CFLAGS = -pipe -g -fPIC `pkg-config --cflags-only-I --libs gtk+-2.0 dbus-1`
 #-Wall -W 
 INCPATH = -I. -I$(JDK_DIR)/include -I$(JDK_DIR)/include/linux 
-SOURCES = NativeLinuxTray.c 
+SOURCES = NativeLinuxTray.c
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS_X64 = $(SOURCES:.c=.x64)
 LIBS=`pkg-config --cflags --libs gtk+-2.0` 

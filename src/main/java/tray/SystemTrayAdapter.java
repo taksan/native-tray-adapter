@@ -6,9 +6,9 @@ import java.net.URL;
 
 public interface SystemTrayAdapter {
 
-	void add(TrayIconAdapter trayIcon);
+	TrayIconAdapter createAndAddTrayIcon(URL imageUrl, String tooltip, PopupMenu popup);
 
-	TrayIconAdapter newNativeTrayIcon(URL imageUrl, String tooltip, PopupMenu popup);
+	void remove(TrayIconAdapter trayIcon);
 
 
 }

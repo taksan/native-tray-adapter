@@ -37,5 +37,4 @@ public class JavaIconAdapter implements TrayIconAdapter {
 	public TrayIcon getTrayIcon() {
 		return trayIcon;
 	}
-
 }
