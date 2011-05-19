@@ -40,6 +40,7 @@ public class LinuxTrayIconAdapterTest {
 	public void testAdapterNativeListener() throws MalformedURLException {
 		NativeTrayMock nativeTrayMock = new NativeTrayMock();
 		LinuxTrayIconAdapter linuxTrayIconAdapter = makeSubject(nativeTrayMock);
+		linuxTrayIconAdapter.fireActionActivated();
 		
 		ActionListener actionListener = new ActionListener() {
 			
@@ -49,12 +50,22 @@ public class LinuxTrayIconAdapterTest {
 			}
 		};
 		linuxTrayIconAdapter.addActionListener(actionListener);
+		ActionListener actionListener2 = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionsPerformed.append("fireActionActivated2\n");
+			}
+		};
+		linuxTrayIconAdapter.addActionListener(actionListener2);
+		
 		linuxTrayIconAdapter.fireActionActivated();
 		linuxTrayIconAdapter.fireMenuAction(1);
 		
 		String actionList = actionsPerformed.toString().trim();
 		Assert.assertEquals(
-				"fireActionActivated\n" + 
+				"fireActionActivated\n" +
+				"fireActionActivated2\n" +
 				"bar-0 java.awt.MenuItem[menuitem0,label=bar]", 
 				actionList);
 	}

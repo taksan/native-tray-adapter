@@ -8,16 +8,19 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import jni.utils.StreamUtils;
 
 class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
-	private ActionListener actionListener;
 	private final NativeTray nativeTray;
 	private final PopupMenu popup;
 	private final String tooltip;
 	private int nativeId;
+	private List<ActionListener> actionListeners = new ArrayList<ActionListener>();
 
 	public LinuxTrayIconAdapter(NativeTray nativeTray, URL imageURL,
 			String tooltip, PopupMenu popup) {
@@ -49,15 +52,15 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 
 	@Override
 	public void addActionListener(ActionListener actionListener) {
-		this.actionListener = actionListener;
+		actionListeners.add(actionListener);
 	}
 
 	@Override
 	public void fireActionActivated() {
-		if (this.actionListener == null)
-			return;
 		ActionEvent e = new ActionEvent(this, 0, "activate");
-		this.actionListener.actionPerformed(e);
+		for (ActionListener anActionListener : this.actionListeners) {
+			anActionListener.actionPerformed(e);
+		}
 	}
 
 	@Override
