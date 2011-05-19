@@ -22,14 +22,8 @@ public class NativeLinuxTray implements NativeTray {
 		nativeAddMenuItem0(nativeId, menuItemIndex, caption);
 	}
 
-	@Override
 	public void nativeSetAutosize(int nativeId, boolean autosize) {
-		nativeSetAutosize0(nativeId, autosize);
-	}
-
-	@Override
-	public void displayTrayIcon(int nativeId) {
-		nativeDisplayTrayIcon(nativeId);
+		// gtk is always autosize
 	}
 
 	@Override
@@ -59,10 +53,6 @@ public class NativeLinuxTray implements NativeTray {
 
 	private native void nativeAddMenuItem0(int nativeId, int menuItemIndex, String caption);
 
-	private native void nativeDisplayTrayIcon(int nativeId);
-
-	private native void nativeSetAutosize0(int nativeId, boolean autosize);
-	
 	private native void nativeSetImage0(int nativeId, String imageFileName);
 
 	private native Point nativeGetIconLocation0(int nativeId);

@@ -14,10 +14,5 @@ public interface NativeTray {
 	
 	void nativeRemoveMe(int nativeId);
 
-	void displayTrayIcon(int nativeId);
-
 	void nativeSetImage(int nativeId, String file);
-
-
-
 }

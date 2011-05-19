@@ -41,22 +41,6 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeAddMenuItem0
 
 /*
  * Class:     tray_linux_NativeLinuxTray
- * Method:    nativeDisplayTrayIcon
- * Signature: (I)V
- */
-JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeDisplayTrayIcon
-  (JNIEnv *, jobject, jint);
-
-/*
- * Class:     tray_linux_NativeLinuxTray
- * Method:    nativeSetAutosize0
- * Signature: (IZ)V
- */
-JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeSetAutosize0
-  (JNIEnv *, jobject, jint, jboolean);
-
-/*
- * Class:     tray_linux_NativeLinuxTray
  * Method:    nativeSetImage0
  * Signature: (ILjava/lang/String;)V
  */

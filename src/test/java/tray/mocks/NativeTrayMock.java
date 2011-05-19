@@ -60,10 +60,6 @@ public class NativeTrayMock implements NativeTray {
 	}
 
 	@Override
-	public void displayTrayIcon(int nativeId) {
-	}
-
-	@Override
 	public void nativeSetImage(int nativeId, String file) {
 		throw new NotImplementedException();
 	}

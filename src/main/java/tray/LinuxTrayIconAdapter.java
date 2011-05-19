@@ -88,7 +88,6 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 		final URL existingFileUrl = makeSureUrlPointsToExistingFile(imageURL);
 		nativeId = nativeTray.nativeCreateTrayIcon(existingFileUrl.getFile(), tooltip);
 		populateNativeMenuListeners(popup);
-		nativeTray.displayTrayIcon(nativeId);
 	}
 
 	private void populateNativeMenuListeners(PopupMenu popup) {
@@ -97,6 +96,7 @@ class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
 			MenuItem item = popup.getItem(i);
 			nativeTray.nativeAddMenuItem(nativeId, i, item.getLabel());
 		}
+
 	}
 
 	public void removeMe() {
