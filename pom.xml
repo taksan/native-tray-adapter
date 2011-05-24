@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.taksan</groupId>
 	<artifactId>native-tray-adapter</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 	<name>Native Tray Adapter</name>
 	<description>Provides a simple adapter that makes the tray use gtk under linux,
 providing a native look and feel.</description>
