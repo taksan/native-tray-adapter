@@ -6,7 +6,7 @@
 		<version>7</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.github.taksan</groupId>
+	<groupId>com.github.taksan</groupId>
 	<artifactId>native-tray-adapter</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>Native Tray Adapter</name>
@@ -25,8 +25,8 @@ providing a native look and feel.</description>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -61,9 +61,9 @@ providing a native look and feel.</description>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.github.taksan</groupId>
+			<groupId>com.github.taksan</groupId>
 			<artifactId>jni-utils</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

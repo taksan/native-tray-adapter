@@ -1,4 +1,4 @@
-package tray;
+package tray.linux;
 
 import java.awt.TrayIcon.MessageType;
 

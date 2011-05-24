@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "commonFunctions.h"
 
+#define MENU_ACTION_CALLBACK_METHOD_NAME "fireMenuAction"
+
 typedef struct  {
 	int nativeId;
 	int itemIndex;
@@ -32,7 +34,7 @@ void menuItemActivationHandler(GtkMenuItem *item, gpointer activationDataPointer
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv, activationData->nativeId);
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
-	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireMenuAction", "(I)V");
+	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, MENU_ACTION_CALLBACK_METHOD_NAME, "(I)V");
 	if (mid == 0) {
 		return;
 	}

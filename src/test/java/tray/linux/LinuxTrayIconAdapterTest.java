@@ -1,4 +1,4 @@
-package tray;
+package tray.linux;
 
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import org.junit.Assert;
 import org.junit.Test;
 
+import tray.linux.LinuxTrayIconAdapter;
 import tray.mocks.NativeTrayMock;
 
 public class LinuxTrayIconAdapterTest {

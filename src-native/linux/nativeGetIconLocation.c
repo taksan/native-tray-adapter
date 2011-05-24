@@ -1,5 +1,7 @@
 #include "commonFunctions.h"
 
+#define JAVA_AWT_POINT_CLASS_REFERENCE "java/awt/Point"
+
 JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
   (JNIEnv *env, jobject invokingObject, jint nativeId)
 {
@@ -7,7 +9,7 @@ JNIEXPORT jobject JNICALL Java_tray_linux_NativeLinuxTray_nativeGetIconLocation0
 	GdkRectangle    rect;
 	gtk_status_icon_get_geometry (nativeInstance[nativeId].trayIcon, &screen, &rect, NULL);
 
-	jclass cls = (*env)->FindClass(env, "java/awt/Point");
+	jclass cls = (*env)->FindClass(env, JAVA_AWT_POINT_CLASS_REFERENCE);
 	jmethodID constructor = (*env)->GetMethodID(env, cls, "<init>", "(II)V");
 
 	jvalue args[2];

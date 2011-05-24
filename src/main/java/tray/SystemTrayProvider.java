@@ -1,5 +1,8 @@
 package tray;
 
+import tray.java.JavaTrayAdapter;
+import tray.linux.LinuxNativeTrayAdapter;
+
 
 public class SystemTrayProvider {
 

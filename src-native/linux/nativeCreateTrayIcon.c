@@ -7,6 +7,8 @@
 
 #include "commonFunctions.h"
 
+#define ACTION_CALLBACK_METHOD_NAME "fireActionActivated"
+
 void trayIconActivatedHandler(GObject *trayIcon, gpointer data);
 void trayIconPopupHandler(GtkStatusIcon *status_icon, guint button, guint32 activate_time, gpointer popUpMenu);
 
@@ -84,7 +86,7 @@ void trayIconActivatedHandler(GObject *trayIcon, gpointer nativeIdPointer)
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv, *((int*)nativeIdPointer));
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
-	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, "fireActionActivated", "()V");
+	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, ACTION_CALLBACK_METHOD_NAME, "()V");
 
 	if (mid == 0) {
 		return;

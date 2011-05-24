@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 
-import tray.NativeTray;
+import tray.linux.NativeTray;
 
 public class NativeTrayMock implements NativeTray {
 

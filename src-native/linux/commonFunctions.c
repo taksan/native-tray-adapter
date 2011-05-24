@@ -1,5 +1,7 @@
 #include <stdarg.h>
 #include "commonFunctions.h"
+#define LINUX_NATIVE_TRAY_ADAPTER_CLASS "tray/linux/LinuxNativeTrayAdapter"
+#define JAVA_TRAY_ICON_ADAPTER_CLASS "tray/linux/LinuxTrayIconAdapter"
 
 JNIEnv * gtkMainThreadJniEnv = NULL;
 TrayIconInstance nativeInstance[10];
@@ -9,8 +11,8 @@ JavaVM *javaVM = NULL;
 
 jobject getLinuxTrayIconAdapter(JNIEnv* env, int nativeId) {
 	
-	jclass classRef = (*gtkMainThreadJniEnv)->FindClass(gtkMainThreadJniEnv, "tray/LinuxNativeTrayAdapter");
-	jmethodID mid = (*env)->GetStaticMethodID(env, classRef, "getLinuxTrayIconAdapter", "(I)Ltray/LinuxTrayIconAdapter;");
+	jclass classRef = (*gtkMainThreadJniEnv)->FindClass(gtkMainThreadJniEnv, LINUX_NATIVE_TRAY_ADAPTER_CLASS);
+	jmethodID mid = (*env)->GetStaticMethodID(env, classRef, "getLinuxTrayIconAdapter", "(I)L" JAVA_TRAY_ICON_ADAPTER_CLASS ";");
 	if (mid == 0) {
 		return NULL;
 	}

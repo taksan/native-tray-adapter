@@ -1,4 +1,4 @@
-package tray;
+package tray.linux;
 
 import java.awt.PopupMenu;
 import java.net.URL;
@@ -6,7 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jni.utils.JniUtils;
-import tray.linux.NativeLinuxTray;
+import tray.SystemTrayAdapter;
+import tray.TrayIconAdapter;
 
 public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
 	private static final NativeLinuxTray nativeTray;

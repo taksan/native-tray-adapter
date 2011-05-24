@@ -3,10 +3,9 @@ package tray.linux;
 import java.awt.Point;
 import java.awt.TrayIcon.MessageType;
 
-import tray.NativeTray;
 import tray.balloon.Balloon;
 
-public class NativeLinuxTray implements NativeTray {
+class NativeLinuxTray implements NativeTray {
 	
 	public NativeLinuxTray() {
 		nativeInit0();

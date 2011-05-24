@@ -8,6 +8,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import tray.java.JavaIconAdapter;
+import tray.java.JavaTrayAdapter;
+
 public class JavaTrayAdapterTest {
 	@Test
 	public void testCreation() {

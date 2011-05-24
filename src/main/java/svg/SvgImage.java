@@ -41,15 +41,6 @@ public final class SvgImage {
         rootSvgNode = getRootNode(svgDocument);
     }
 
-    /**
-     * Load the svg from a document.
-     *
-     * @param document svg resource
-     */
-    public SvgImage(SVGDocument document) {
-        svgDocument = document;
-        rootSvgNode = getRootNode(svgDocument);
-    }
 
     /**
      * Get svg root from the given document.
@@ -72,14 +63,6 @@ public final class SvgImage {
      */
     public GraphicsNode getRootSvgNode() {
         return rootSvgNode;
-    }
-
-    /**
-     * Get the svg document.
-     * @return the svg document.
-     */
-    public SVGDocument getSvgDocument() {
-        return svgDocument;
     }
 
     /**

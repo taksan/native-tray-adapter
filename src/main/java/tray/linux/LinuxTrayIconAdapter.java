@@ -1,4 +1,4 @@
-package tray;
+package tray.linux;
 
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -11,9 +11,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import tray.TrayIconAdapter;
+
 import jni.utils.StreamUtils;
 
-class LinuxTrayIconAdapter implements TrayIconAdapter, NativeLinuxTrayListener {
+public class LinuxTrayIconAdapter implements TrayIconAdapter, TrayMethodsThatAreInvokedByTheNativeCounterpart {
 
 	private final NativeTray nativeTray;
 	private final PopupMenu popup;

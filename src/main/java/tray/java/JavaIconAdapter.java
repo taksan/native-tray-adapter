@@ -1,10 +1,13 @@
-package tray;
+package tray.java;
 
 import java.awt.PopupMenu;
 import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionListener;
 import java.net.URL;
+
+import tray.ImageLoader;
+import tray.TrayIconAdapter;
 
 public class JavaIconAdapter implements TrayIconAdapter {
 
