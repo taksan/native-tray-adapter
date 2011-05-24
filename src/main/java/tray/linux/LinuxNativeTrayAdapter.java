@@ -10,11 +10,17 @@ import tray.SystemTrayAdapter;
 import tray.TrayIconAdapter;
 
 public class LinuxNativeTrayAdapter implements SystemTrayAdapter {
-	private static final NativeLinuxTray nativeTray;
+	private static NativeLinuxTray nativeTray;
 	static Map<Integer,LinuxTrayIconAdapter> trayIconInstances = new LinkedHashMap<Integer,LinuxTrayIconAdapter>();
-	static {
-		JniUtils.loadLibrary("linuxtray_x64");
-		nativeTray = new NativeLinuxTray();
+	public LinuxNativeTrayAdapter() 
+	{
+		loadNativeLibraryIfNotAlreadyLoaded();
+	}
+
+	private void loadNativeLibraryIfNotAlreadyLoaded() {
+		if (nativeTray == null) {
+			nativeTray = new NativeLinuxTray();
+		}
 	}
 
 	@Override

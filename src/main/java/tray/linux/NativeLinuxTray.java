@@ -3,12 +3,22 @@ package tray.linux;
 import java.awt.Point;
 import java.awt.TrayIcon.MessageType;
 
+import jni.utils.JniUtils;
+
 import tray.balloon.Balloon;
 
 class NativeLinuxTray implements NativeTray {
 	
 	public NativeLinuxTray() {
+		String libraryName = String.format("linuxtray_%s", getArchSuffix());
+		JniUtils.loadLibrary(libraryName);
 		nativeInit0();
+	}
+
+	private String getArchSuffix() {
+		if (System.getProperty("os.arch").contains("64"))
+			return "x64";
+		return "x86";
 	}
 
 	@Override
