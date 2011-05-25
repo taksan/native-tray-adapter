@@ -1,0 +1,24 @@
+This small library provides a way to work around the JDK transparency bug under linux by
+providing a native GTK implementation of a tray abstraction. The usage is very simple:
+
+ SystemTrayAdapter trayAdapter = SystemTrayProvider.getSystemTray();  
+ URL imageUrl = getClass().getResource("myImage.svg");  
+ String tooltip = "I'm transparent under linux!";   
+ PopupMenu popup = produceMyPopupMenu();  
+ TrayIconAdapter trayIconAdapter = trayAdapter.createAndAddTrayIcon(  
+    imageUrl,   
+    tooltip,  
+    popup); 
+
+When running under a system that supports transparency (like windows), the provider will
+return a wrapper for the usual awt implementation. Under linux, it will try to use the 
+native implementation (that requires GTK 2+). If there's any problem trying to load the native
+library (for example, if GTK is not installed), it will fallback to the awt implementation,
+graciously degrading.
+
+This project uses maven and the artifacts are available in Maven Central, under the following
+ids:
+	<groupId>com.github.taksan</groupId>
+	<artifactId>native-tray-adapter</artifactId>
+
+Enjoy and, please, feel free to report any bugs =)

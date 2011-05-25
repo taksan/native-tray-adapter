@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import jni.utils.JniUtils;
 import tray.SystemTrayAdapter;
 import tray.TrayIconAdapter;
 
