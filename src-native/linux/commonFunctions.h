@@ -13,6 +13,7 @@ typedef struct {
 	char * iconFileName;
 	char * tooltipText;
 	pthread_mutex_t lockToWaitInit;
+	pthread_cond_t condToWaitInit; 
 } TrayIconData;
 
 jobject getLinuxTrayIconAdapter(JNIEnv* env, int nativeId);
