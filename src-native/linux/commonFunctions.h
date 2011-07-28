@@ -21,6 +21,9 @@ void setTooltip(JNIEnv *env, GtkStatusIcon *trayIcon, jstring tooltip);
 
 void print_debugger(const char *fmt, ...); 
 
+void gtk_init_with_empty_args();
+int createTrayIconForIconAndWithTooltip(char * iconFileName, char * tooltipText);
+
 extern TrayIconInstance nativeInstance[10];
 extern int nativeInstanceCount;
 extern int nextInstanceId; 

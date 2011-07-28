@@ -18,12 +18,23 @@ void initializeMutexToWaitUntilActualTrayIconCreation(TrayIconData * trayIconDat
 void waitUntilTheTrayIconIsCreatedWhenGtkMainIsIdle(TrayIconData * trayIconData);
 
 GtkWidget * createTrayIconMenu(GtkStatusIcon *trayIcon);
-TrayIconData * createNewTrayIconData(JNIEnv *env, jstring file, jstring tooltip);
+TrayIconData * createNewTrayIconData(char * file, char * tooltip);
+
+int getNextInstanceId();
 
 JNIEXPORT int JNICALL Java_tray_linux_NativeLinuxTray_nativeCreateTrayIcon0
   (JNIEnv *env, jobject invokingObject, jstring file, jstring tooltip)
 {
-	TrayIconData * trayIconData = createNewTrayIconData(env, file, tooltip);
+	(void) invokingObject;// avoid warning
+	char * iconFileName = convertJStringToCString(env, file);
+	char * tooltipText  = convertJStringToCString(env, tooltip);
+
+	return createTrayIconForIconAndWithTooltip(iconFileName, tooltipText);
+}
+
+int createTrayIconForIconAndWithTooltip(char * iconFileName, char * tooltipText)
+{
+	TrayIconData * trayIconData = createNewTrayIconData(iconFileName, tooltipText);
 
 	initializeMutexToWaitUntilActualTrayIconCreation(trayIconData);
 
@@ -35,6 +46,7 @@ JNIEXPORT int JNICALL Java_tray_linux_NativeLinuxTray_nativeCreateTrayIcon0
 	free(trayIconData);
 	return newInstanceId;
 }
+
 
 gboolean createTrayIconWhenGtkMainIsIdle(TrayIconData * trayIconData)
 {
@@ -55,51 +67,50 @@ gboolean createTrayIconWhenGtkMainIsIdle(TrayIconData * trayIconData)
 
 
 	printf("Will lock before sending signal\n");
-	pthread_mutex_lock(&(trayIconData->lockToWaitInit));
+	pthread_mutex_lock(&trayIconData->lockToWaitInit);
 
 
 	printf("Will send signal\n");
-	pthread_cond_signal(&(trayIconData->condToWaitInit));
+	pthread_cond_signal(&trayIconData->condToWaitInit);
 
 	printf("Signal sent, releasing lock\n");
-	pthread_mutex_unlock(&(trayIconData->lockToWaitInit));
+	pthread_mutex_unlock(&trayIconData->lockToWaitInit);
 	printf("Lock released\n");
 
 	return 0;
 }
 
-TrayIconData * createNewTrayIconData(JNIEnv *env, jstring file, jstring tooltip)
+TrayIconData * createNewTrayIconData(char * file, char * tooltip)
 {
 	int newInstanceId = getNextInstanceId();
 	TrayIconData * trayIconData;
 	trayIconData = (TrayIconData*)malloc(sizeof(TrayIconData));
 	trayIconData->nativeId = newInstanceId;
-	trayIconData->iconFileName = convertJStringToCString(env, file);
-	trayIconData->tooltipText  = convertJStringToCString(env, tooltip);
-	printf("tooltip - %s\n", trayIconData->tooltipText);
+	trayIconData->iconFileName = strdup(file);
+	trayIconData->tooltipText  = strdup(tooltip);
 	return trayIconData;
+}
+
+void initializeMutexToWaitUntilActualTrayIconCreation(TrayIconData * trayIconData)
+{
+	pthread_mutex_init(&trayIconData->lockToWaitInit, NULL);
+	pthread_cond_init(&trayIconData->condToWaitInit, NULL);
+	pthread_mutex_lock(&trayIconData->lockToWaitInit);
 }
 
 void waitUntilTheTrayIconIsCreatedWhenGtkMainIsIdle(TrayIconData * trayIconData)
 {
 	printf(" -- will wait condition -- \n");
 	// wait until the tray icon is created
-	pthread_cond_wait(&(trayIconData->condToWaitInit), &(trayIconData->lockToWaitInit));
-	pthread_mutex_unlock(&(trayIconData->lockToWaitInit));
+	pthread_cond_wait(&trayIconData->condToWaitInit, &trayIconData->lockToWaitInit);
+	pthread_mutex_unlock(&trayIconData->lockToWaitInit);
 
 	printf(" -- condition met -- \n");
 }
 
-void initializeMutexToWaitUntilActualTrayIconCreation(TrayIconData * trayIconData)
-{
-	pthread_mutex_init(&(trayIconData->lockToWaitInit), NULL);
-	pthread_cond_init(&(trayIconData->condToWaitInit), NULL);
-	printf("First lock\n");
-	pthread_mutex_lock(&(trayIconData->lockToWaitInit));
-}
-
 void trayIconActivatedHandler(GObject *trayIcon, gpointer nativeIdPointer)
 {
+	(void) trayIcon; // avoid warning
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv, *((int*)nativeIdPointer));
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 

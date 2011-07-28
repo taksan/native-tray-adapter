@@ -19,7 +19,7 @@
 JDK_DIR = $(JAVA_HOME)
 
 CC = gcc
-CFLAGS = -pipe -g -fPIC `pkg-config --cflags-only-I --libs gtk+-2.0 dbus-1`
+CFLAGS = -pipe -g -fPIC `pkg-config --cflags-only-I --libs gtk+-2.0 dbus-1` -Wall -W -O2
 #-Wall -W 
 INCPATH = -I. -I$(JDK_DIR)/include -I$(JDK_DIR)/include/linux 
 SOURCES = commonFunctions.c nativeInit.c nativeCreateTrayIcon.c nativeSetImage.c nativeAddMenuItem.c \
@@ -27,6 +27,7 @@ SOURCES = commonFunctions.c nativeInit.c nativeCreateTrayIcon.c nativeSetImage.c
 OBJECTS = $(SOURCES:.c=.o)
 OBJECTS_X64 = $(SOURCES:.c=.x64)
 LIBS=`pkg-config --cflags --libs gtk+-2.0` 
+TRAY_PATH=../../src/main/resources/
 
 .SECONDEXPANSION:
 
@@ -58,7 +59,8 @@ tray_linux_NativeLinuxTray.h: ../../src/main/java/tray/linux/NativeLinuxTray.jav
 .c.o:
 	$(CC) -c $(CFLAGS) $(INCPATH) -m32 -o $@ $<
 
-
+nativeTrayTest:
+	gcc -o nativeTrayTest nativeTrayMainTest.c -g  -lpthread -L$(TRAY_PATH)  -llinuxtray_x64	
 
 clean:
 	rm -f  *.o *.so *.x64

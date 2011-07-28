@@ -7,10 +7,7 @@ JNIEXPORT void JNICALL Java_tray_linux_NativeLinuxTray_nativeInit0
 {
 	(*env)->GetJavaVM(env, &javaVM);
 
-	int argc = 0;
-	char ** argv = malloc(sizeof(char*));
-	argv[0] = "";
-    gtk_init (&argc, &argv);
+	gtk_init_with_empty_args();
 
 	pthread_t gtkMainThreadId;
 	pthread_create(&gtkMainThreadId, NULL, gtkMainThread , NULL);
@@ -23,3 +20,10 @@ void * gtkMainThread(void * nothingUseful)
 	(*javaVM)->DetachCurrentThread(javaVM);
 }
 
+void gtk_init_with_empty_args()
+{
+	int argc = 0;
+	char ** argv = malloc(sizeof(char*));
+	argv[0] = "";
+    gtk_init (&argc, &argv);
+}
