@@ -10,7 +10,9 @@ int nextInstanceId = 0;
 JavaVM *javaVM = NULL;
 
 jobject getLinuxTrayIconAdapter(JNIEnv* env, int nativeId) {
-	
+	if (gtkMainThreadJniEnv == NULL) {
+		return NULL;
+	}
 	jclass classRef = (*gtkMainThreadJniEnv)->FindClass(gtkMainThreadJniEnv, LINUX_NATIVE_TRAY_ADAPTER_CLASS);
 	jmethodID mid = (*env)->GetStaticMethodID(env, classRef, "getLinuxTrayIconAdapter", "(I)L" JAVA_TRAY_ICON_ADAPTER_CLASS ";");
 	if (mid == 0) {

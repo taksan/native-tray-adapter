@@ -43,7 +43,12 @@ int createTrayIconForIconAndWithTooltip(char * iconFileName, char * tooltipText)
 	waitUntilTheTrayIconIsCreatedWhenGtkMainIsIdle(trayIconData);
 
 	int newInstanceId = trayIconData->nativeId;
+
+	pthread_cond_destroy(&trayIconData->condToWaitInit);
+	pthread_mutex_destroy(&trayIconData->lockToWaitInit);
 	free(trayIconData);
+
+	printf(" Tray icon creation finished. **\n");
 	return newInstanceId;
 }
 
@@ -51,10 +56,14 @@ int createTrayIconForIconAndWithTooltip(char * iconFileName, char * tooltipText)
 gboolean createTrayIconWhenGtkMainIsIdle(TrayIconData * trayIconData)
 {
 	GtkStatusIcon *trayIcon = gtk_status_icon_new_from_file (trayIconData->iconFileName);
+	gtk_status_icon_set_visible(trayIcon, FALSE);
+
 	TrayIconInstance * trayIconInstance = &nativeInstance[trayIconData->nativeId];
 	trayIconInstance->trayIcon = trayIcon;
 
-	gtk_status_icon_set_tooltip (trayIcon, trayIconData->tooltipText);
+	const char * tooltipText = strdup(trayIconData->tooltipText);
+
+	gtk_status_icon_set_tooltip (trayIcon, tooltipText);
 
 	trayIconInstance->trayIconMenu = createTrayIconMenu(trayIcon);
 	gtk_widget_show_all (trayIconInstance->trayIconMenu);
@@ -63,19 +72,11 @@ gboolean createTrayIconWhenGtkMainIsIdle(TrayIconData * trayIconData)
 	*nativeIdParam = trayIconData->nativeId;
 	g_signal_connect(GTK_STATUS_ICON (trayIcon), "activate", GTK_SIGNAL_FUNC (trayIconActivatedHandler), nativeIdParam);
 
-	gtk_status_icon_set_visible(trayIcon, TRUE);
-
-
-	printf("Will lock before sending signal\n");
 	pthread_mutex_lock(&trayIconData->lockToWaitInit);
-
-
-	printf("Will send signal\n");
 	pthread_cond_signal(&trayIconData->condToWaitInit);
-
-	printf("Signal sent, releasing lock\n");
 	pthread_mutex_unlock(&trayIconData->lockToWaitInit);
-	printf("Lock released\n");
+	
+	gtk_status_icon_set_visible(trayIcon, TRUE);
 
 	return 0;
 }
@@ -100,23 +101,30 @@ void initializeMutexToWaitUntilActualTrayIconCreation(TrayIconData * trayIconDat
 
 void waitUntilTheTrayIconIsCreatedWhenGtkMainIsIdle(TrayIconData * trayIconData)
 {
-	printf(" -- will wait condition -- \n");
 	// wait until the tray icon is created
 	pthread_cond_wait(&trayIconData->condToWaitInit, &trayIconData->lockToWaitInit);
 	pthread_mutex_unlock(&trayIconData->lockToWaitInit);
-
-	printf(" -- condition met -- \n");
+	sleep(1);
 }
 
 void trayIconActivatedHandler(GObject *trayIcon, gpointer nativeIdPointer)
 {
 	(void) trayIcon; // avoid warning
+	if (gtkMainThreadJniEnv == NULL) {
+		print_debugger("gtkMainThreadJniEnv is NULL. This situation should be impossible.");
+		return;
+	}
 	jobject trayAdapter = getLinuxTrayIconAdapter(gtkMainThreadJniEnv, *((int*)nativeIdPointer));
+	if (trayAdapter == NULL){
+		print_debugger("Tray adapter is NULL.");
+		return;
+	}
 	jclass classRef = (*gtkMainThreadJniEnv)->GetObjectClass(gtkMainThreadJniEnv, trayAdapter);
 
 	jmethodID mid = (*gtkMainThreadJniEnv)->GetMethodID(gtkMainThreadJniEnv, classRef, ACTION_CALLBACK_METHOD_NAME, "()V");
 
 	if (mid == 0) {
+		print_debugger(ACTION_CALLBACK_METHOD_NAME " was not found.");
 		return;
 	}
 
@@ -147,9 +155,7 @@ int getNextInstanceId() {
 GtkWidget *createTrayIconMenu(GtkStatusIcon *trayIcon)
 {
 	GtkWidget *trayIconMenu = gtk_menu_new();
-
     g_signal_connect(GTK_STATUS_ICON (trayIcon), "popup-menu", GTK_SIGNAL_FUNC (trayIconPopupHandler), trayIconMenu);
-
 	return trayIconMenu;
 }
 

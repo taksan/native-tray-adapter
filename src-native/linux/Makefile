@@ -59,7 +59,7 @@ tray_linux_NativeLinuxTray.h: ../../src/main/java/tray/linux/NativeLinuxTray.jav
 .c.o:
 	$(CC) -c $(CFLAGS) $(INCPATH) -m32 -o $@ $<
 
-nativeTrayTest:
+nativeTrayTest: nativeTrayMainTest.c
 	gcc -o nativeTrayTest nativeTrayMainTest.c -g  -lpthread -L$(TRAY_PATH)  -llinuxtray_x64	
 
 clean:
