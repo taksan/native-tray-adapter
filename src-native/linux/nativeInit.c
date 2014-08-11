@@ -29,6 +29,7 @@ void gtk_init_with_empty_args()
 	int argc = 0;
 	char ** argv = malloc(sizeof(char*));
 	argv[0] = "";
+	XInitThreads();
     if (gtk_init_check (&argc, &argv) == FALSE) {
 		fprintf(stderr, "Failed to start GTK\n");
 	}
